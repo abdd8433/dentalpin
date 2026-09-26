@@ -195,7 +195,12 @@ function lastUsedLabel(iso: string | null): string {
 
 <template>
   <div class="space-y-6 max-w-3xl">
-    <UAlert v-if="!canRead" color="warning" variant="soft" :title="t('leads.settings.noPermission')" />
+    <UAlert
+      v-if="!canRead"
+      color="warning"
+      variant="soft"
+      :title="t('leads.settings.noPermission')"
+    />
 
     <template v-else>
       <div>
@@ -207,7 +212,10 @@ function lastUsedLabel(iso: string | null): string {
         </p>
       </div>
 
-      <USkeleton v-if="loading" class="h-64 w-full" />
+      <USkeleton
+        v-if="loading"
+        class="h-64 w-full"
+      />
 
       <template v-else-if="settings">
         <!-- 2. Today's gauge (read before the number behind it). -->
@@ -222,8 +230,14 @@ function lastUsedLabel(iso: string | null): string {
               </div>
             </div>
           </div>
-          <UAlert v-if="atLimit" class="mt-3" color="warning" variant="soft" icon="i-lucide-pause-circle"
-            :title="t('leads.settings.atLimit')" />
+          <UAlert
+            v-if="atLimit"
+            class="mt-3"
+            color="warning"
+            variant="soft"
+            icon="i-lucide-pause-circle"
+            :title="t('leads.settings.atLimit')"
+          />
           <p class="text-caption text-subtle mt-3">
             {{ t('leads.settings.capLoweredWarning') }}
           </p>
@@ -235,16 +249,35 @@ function lastUsedLabel(iso: string | null): string {
             <span class="text-ui font-medium text-default">{{ t('leads.settings.capLabel') }}</span>
           </template>
           <div class="flex flex-wrap items-end gap-3">
-            <UFormField :label="t('leads.settings.capLabel')" :help="t('leads.settings.capHint')" class="w-40">
+            <UFormField
+              :label="t('leads.settings.capLabel')"
+              :help="t('leads.settings.capHint')"
+              class="w-40"
+            >
               <!-- Read-only rather than hidden when the role cannot write:
                    the cap is the number behind what staff are seeing. -->
-              <UInput v-model.number="capInput" type="number" min="0" :max="CAP_MAX" :disabled="!canWrite" />
+              <UInput
+                v-model.number="capInput"
+                type="number"
+                min="0"
+                :max="CAP_MAX"
+                :disabled="!canWrite"
+              />
             </UFormField>
-            <UButton v-if="canWrite" :loading="savingCap" :disabled="!capValid" icon="i-lucide-save" @click="saveCap">
+            <UButton
+              v-if="canWrite"
+              :loading="savingCap"
+              :disabled="!capValid"
+              icon="i-lucide-save"
+              @click="saveCap"
+            >
               {{ t('leads.settings.capSave') }}
             </UButton>
           </div>
-          <p v-if="!canWrite" class="text-caption text-subtle mt-3">
+          <p
+            v-if="!canWrite"
+            class="text-caption text-subtle mt-3"
+          >
             {{ t('leads.settings.readOnly') }}
           </p>
         </UCard>
@@ -254,20 +287,29 @@ function lastUsedLabel(iso: string | null): string {
           <template #header>
             <div class="flex items-center justify-between gap-2">
               <span class="text-ui font-medium text-default">{{ t('leads.settings.keyTitle') }}</span>
-              <UBadge v-if="settings.key.configured" :color="settings.key.is_active ? 'success' : 'warning'"
-                variant="subtle">
+              <UBadge
+                v-if="settings.key.configured"
+                :color="settings.key.is_active ? 'success' : 'warning'"
+                variant="subtle"
+              >
                 {{ settings.key.is_active ? t('leads.settings.keyActive') : t('leads.settings.keyInactive') }}
               </UBadge>
             </div>
           </template>
 
-          <div v-if="settings.key.configured" class="space-y-3">
+          <div
+            v-if="settings.key.configured"
+            class="space-y-3"
+          >
             <dl class="flex flex-wrap gap-x-6 gap-y-1 text-ui">
               <div>
                 <dt class="text-caption text-subtle">
                   {{ t('leads.settings.keyPrefix') }}
                 </dt>
-                <dd class="text-default font-mono" dir="ltr">
+                <dd
+                  class="text-default font-mono"
+                  dir="ltr"
+                >
                   {{ settings.key.key_prefix }}…
                 </dd>
               </div>
@@ -281,18 +323,32 @@ function lastUsedLabel(iso: string | null): string {
               </div>
             </dl>
 
-            <UFormField v-if="canWrite" :label="t('leads.settings.activate')">
-              <USwitch :model-value="settings.key.is_active" :disabled="togglingKey"
-                @update:model-value="(value) => toggleKey(Boolean(value))" />
+            <UFormField
+              v-if="canWrite"
+              :label="t('leads.settings.activate')"
+            >
+              <USwitch
+                :model-value="settings.key.is_active"
+                :disabled="togglingKey"
+                @update:model-value="(value) => toggleKey(Boolean(value))"
+              />
             </UFormField>
           </div>
 
-          <p v-else class="text-body text-muted">
+          <p
+            v-else
+            class="text-body text-muted"
+          >
             {{ t('leads.settings.keyMissing') }}
           </p>
 
           <template v-if="canWrite">
-            <UButton class="mt-4" variant="outline" icon="i-lucide-key-round" @click="showRotateConfirm = true">
+            <UButton
+              class="mt-4"
+              variant="outline"
+              icon="i-lucide-key-round"
+              @click="showRotateConfirm = true"
+            >
               {{ t('leads.settings.rotate') }}
             </UButton>
             <p class="text-caption text-subtle mt-2">
@@ -301,19 +357,37 @@ function lastUsedLabel(iso: string | null): string {
           </template>
         </UCard>
 
-        <RotateKeyConfirmModal v-model:open="showRotateConfirm" :loading="rotating" :error="rotateError"
-          @confirm="rotate" />
+        <RotateKeyConfirmModal
+          v-model:open="showRotateConfirm"
+          :loading="rotating"
+          :error="rotateError"
+          @confirm="rotate"
+        />
 
         <!-- The freshly rotated key: shown once, kept only in local state. -->
         <UCard v-if="freshKey">
           <template #header>
             <span class="text-ui font-medium text-default">{{ t('leads.settings.keyTitle') }}</span>
           </template>
-          <UAlert color="warning" variant="soft" icon="i-lucide-eye" :title="t('leads.settings.rotateCopyOnce')" />
+          <UAlert
+            color="warning"
+            variant="soft"
+            icon="i-lucide-eye"
+            :title="t('leads.settings.rotateCopyOnce')"
+          />
           <div class="flex items-center gap-2 mt-3">
-            <UInput :model-value="freshKey" readonly class="flex-1 font-mono" dir="ltr" />
-            <UButton icon="i-lucide-copy" variant="outline" :aria-label="t('leads.settings.copy')"
-              @click="copy(freshKey)">
+            <UInput
+              :model-value="freshKey"
+              readonly
+              class="flex-1 font-mono"
+              dir="ltr"
+            />
+            <UButton
+              icon="i-lucide-copy"
+              variant="outline"
+              :aria-label="t('leads.settings.copy')"
+              @click="copy(freshKey)"
+            >
               {{ t('leads.settings.copy') }}
             </UButton>
           </div>
@@ -325,9 +399,18 @@ function lastUsedLabel(iso: string | null): string {
             <span class="text-ui font-medium text-default">{{ t('leads.settings.intakeUrl') }}</span>
           </template>
           <div class="flex items-center gap-2">
-            <UInput :model-value="intakeUrl" readonly class="flex-1" dir="ltr" />
-            <UButton icon="i-lucide-copy" variant="outline" :aria-label="t('leads.settings.copy')"
-              @click="copy(intakeUrl)">
+            <UInput
+              :model-value="intakeUrl"
+              readonly
+              class="flex-1"
+              dir="ltr"
+            />
+            <UButton
+              icon="i-lucide-copy"
+              variant="outline"
+              :aria-label="t('leads.settings.copy')"
+              @click="copy(intakeUrl)"
+            >
               {{ t('leads.settings.copy') }}
             </UButton>
           </div>
@@ -337,16 +420,30 @@ function lastUsedLabel(iso: string | null): string {
               <div class="text-caption text-subtle">
                 {{ t('leads.settings.example') }}
               </div>
-              <UButton icon="i-lucide-copy" variant="ghost" color="neutral" size="xs" @click="copy(curlExample)">
+              <UButton
+                icon="i-lucide-copy"
+                variant="ghost"
+                color="neutral"
+                size="xs"
+                @click="copy(curlExample)"
+              >
                 {{ t('leads.settings.copy') }}
               </UButton>
             </div>
-            <pre class="text-caption bg-surface-muted rounded-token-md p-3 overflow-x-auto whitespace-pre" dir="ltr">{{
-              curlExample }}</pre>
+            <pre
+              class="text-caption bg-surface-muted rounded-token-md p-3 overflow-x-auto whitespace-pre"
+              dir="ltr"
+            >{{
+            curlExample }}</pre>
           </div>
 
-          <UAlert class="mt-4" color="info" variant="soft" icon="i-lucide-route"
-            :description="t('leads.settings.routingNote')" />
+          <UAlert
+            class="mt-4"
+            color="info"
+            variant="soft"
+            icon="i-lucide-route"
+            :description="t('leads.settings.routingNote')"
+          />
         </UCard>
       </template>
     </template>
